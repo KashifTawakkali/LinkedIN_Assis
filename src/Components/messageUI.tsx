@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { AiOutlineEdit, AiOutlineSend } from 'react-icons/ai'; // Import icons
-import { FaImage, FaPaperclip, FaRegLaughBeam, FaSmile } from 'react-icons/fa'; // Additional icons for options
+import { AiOutlineEdit, AiOutlineSend, } from 'react-icons/ai';
+import { FaImage, FaPaperclip, FaRegLaughBeam, FaSmile } from 'react-icons/fa';
 
 interface Message {
   name: string;
@@ -62,7 +62,10 @@ const MessageUI: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [userMessage, setUserMessage] = useState<string>('');
   const [messagesInModal, setMessagesInModal] = useState<{ sender: 'user' | 'ai'; text: string }[]>([]);
-  const modalRef = useRef<HTMLDivElement | null>(null); // Ref for modal
+  const modalRef = useRef<HTMLDivElement | null>(null);
+  const insertMessage = "Thank you for the opportunity! If you have any more questions or if there’s anything else I can help you with, feel free to ask.";
+  const [isButtonVisible, setIsButtonVisible] = useState<boolean>(true);
+
 
   // Function to handle sending a message and receiving a response from AI
   const handleSendMessage = () => {
@@ -74,6 +77,7 @@ const MessageUI: React.FC = () => {
       ];
       setMessagesInModal(newMessages);
       setUserMessage('');
+
     }
   };
 
@@ -95,6 +99,18 @@ const MessageUI: React.FC = () => {
       document.removeEventListener('mousedown', handleOutsideClick); // Clean up
     };
   }, [isModalOpen]);
+
+
+  const handleInsertMessage = () => {
+    setUserMessage(insertMessage); 
+    setIsModalOpen(false);
+    setIsButtonVisible(true);
+  };
+
+  const openModal = () => {
+    setIsButtonVisible(false); // Hide the button
+    setIsModalOpen(true); // Open the modal
+  };
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -178,12 +194,14 @@ const MessageUI: React.FC = () => {
                 value={userMessage}
                 onChange={(e) => setUserMessage(e.target.value)}
               />
+              {isButtonVisible && ( // Conditionally render the button
               <button
                 className="absolute right-10 text-blue-500 flex items-center"
-                onClick={() => setIsModalOpen(true)}
+                onClick={openModal}
               >
                 <AiOutlineEdit className="mr-2" /> {/* Icon next to the button text */}
               </button>
+            )}
             </div>
 
             {/* Options for Uploads and Emojis */}
@@ -229,15 +247,21 @@ const MessageUI: React.FC = () => {
               </div>
 
               {/* Input Field and Send Button */}
-              <div className="flex flex-col items-start mt-4"> {/* Align items to the start */}
+              <div className="flex flex-col items-start mt-4">
                 <input
                   type="text"
                   placeholder="Your prompt"
-                  className="border rounded-full p-2 outline-none w-full mb-2" // Added width and margin-bottom for spacing
+                  className="border rounded-full p-2 outline-none w-full mb-2"
                   value={userMessage}
                   onChange={(e) => setUserMessage(e.target.value)}
                 />
-                <div className="w-full flex justify-end"> {/* Align button to the right */}
+                <div className="w-full flex justify-end">
+                  <button
+                    className="bg-gray-300 text-black font-semibold py-2 px-4 rounded-full flex items-center justify-center mr-2"
+                    onClick={handleInsertMessage} // Use the new insert function here
+                  >
+                    Insert
+                  </button>
                   <button
                     className="bg-blue-500 text-white font-semibold py-2 px-6 rounded-full flex items-center justify-center"
                     onClick={handleSendMessage}
@@ -247,7 +271,6 @@ const MessageUI: React.FC = () => {
                   </button>
                 </div>
               </div>
-
             </div>
           </div>
         )}
