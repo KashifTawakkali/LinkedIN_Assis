@@ -14,6 +14,7 @@ function App() {
         <SideBar />
         <div className="md:basis-2/3">
           <FeedSection />
+   
           <hr className="h-1 mt-3 bg-gray-400"/>
           <PostSection />
         </div>
